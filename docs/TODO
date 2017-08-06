@@ -1,0 +1,13 @@
+Before 1.0
+~~~~~~~~~~
+
+- add node inspector?
+- more integration modules
+  * flask?
+  * django?
+  * web2py?
+  * bottle?
+- python 3?
+- pickle
+
+.. vim:tw=72 syntax=rest
