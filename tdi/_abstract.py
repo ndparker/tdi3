@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2017
+ Copyright 2017
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -19,17 +19,33 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-================================
-  Template Data Interface (TDI)
-================================
+================
+ ABC base setup
+================
 
-Template Data Interface (TDI).
+ABCs base setup
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
-__version__ = '1.0.0'
 
-from . import _util
+import abc as _abc
 
-__all__ = _util.find_public(globals())
+# pylint: disable = invalid-name
+base = type.__new__(_abc.ABCMeta, 'base', (), {})
+method = _abc.abstractmethod
+
+
+def make_impl(space):
+    """ Make impl function """
+    def impl(*which):
+        """ Register implementation for abstract ... """
+
+        def inner(cls):
+            """ Decorator """
+            for target in which:
+                if isinstance(target, str):
+                    target = space[target]
+                target.register(cls)
+            return cls
+        return inner
+    return impl

@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2017
+ Copyright 2017
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -19,17 +19,10 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-================================
-  Template Data Interface (TDI)
-================================
+===========================
+ Tests for tdi.markup.text
+===========================
 
-Template Data Interface (TDI).
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
-__version__ = '1.0.0'
-
-from . import _util
-
-__all__ = _util.find_public(globals())

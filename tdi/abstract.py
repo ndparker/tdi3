@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2017
+ Copyright 2017
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -19,17 +19,16 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-================================
-  Template Data Interface (TDI)
-================================
+=================
+ ABC definitions
+=================
 
-Template Data Interface (TDI).
+ABCs used within this (sub)package.
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
-__version__ = '1.0.0'
 
-from . import _util
+from . import _abstract
 
-__all__ = _util.find_public(globals())
+base, method = _abstract.base, _abstract.method
+impl = _abstract.make_impl(globals())

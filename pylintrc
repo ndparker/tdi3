@@ -62,6 +62,8 @@ disable=
     locally-disabled,
     file-ignored,
 
+    too-many-ancestors,
+
     wrong-import-position,
     using-constant-test,
     redefined-variable-type,

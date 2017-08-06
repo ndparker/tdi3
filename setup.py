@@ -142,8 +142,21 @@ class Extension(_core.Extension):
             self.depends.append(cext_h)
 
 
-EXTENSIONS = [
-]
+EXTENSIONS = [Extension('tdi.c._tdi_impl', [
+    "tdi/c/main.c",
+
+    "tdi/c/markup/attr.c",
+    "tdi/c/markup/text/decoder.c",
+    "tdi/c/markup/text/encoder.c",
+], depends=[
+    "tdi/c/include/bytestr.h",
+    "tdi/c/include/length.h",
+    "tdi/c/include/markup/attr.h",
+    "tdi/c/include/markup/text/decoder.h",
+    "tdi/c/include/markup/text/encoder.h",
+], include_dirs=[
+    "tdi/c/include",
+])]
 
 
 def setup():

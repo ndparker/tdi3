@@ -19,8 +19,13 @@
  * central naming stuff
  */
 
-#ifndef SETUP_CEXT_H
-#define SETUP_CEXT_H
+#ifndef CEXT_H
+#define CEXT_H
+
+#define LCOV_EXCL_LINE_GOTO(x) goto x
+#define LCOV_EXCL_LINE_RETURN(x) return (x)
+#define LCOV_EXCL_START
+#define LCOV_EXCL_STOP
 
 #ifndef EXT_MODULE
 #error EXT_MODULE must be defined outside of this file (-DEXT_MODULE=...)
@@ -130,6 +135,9 @@ static struct PyModuleDef EXT_DEFINE_VAR = { \
 
 #define EXT2
 
+/*
+ * Py3 Object defintions
+ */
 #ifndef PyVarObject_HEAD_INIT
     #define PyVarObject_HEAD_INIT(type, size) \
         PyObject_HEAD_INIT(type) size,
@@ -184,6 +192,80 @@ static struct EXT_DEFINE__STRUCT EXT_DEFINE_VAR = { \
 
 #endif /* end py2K */
 
+
+/*
+ * Fake py 3.3 Unicode APIs
+ */
+#ifndef PyUnicode_GET_LENGTH
+
+#ifdef EXT_PEP393
+#undef EXT_PEP393
+#endif
+
+#define EXT_UNI_CP Py_UNICODE
+enum PyUnicode_Kind {
+/* String contains only wstr byte characters.  This is only possible
+   when the string was created with a legacy API and _PyUnicode_Ready()
+   has not been called yet.  */
+    PyUnicode_WCHAR_KIND = 0,
+/* Return values of the PyUnicode_KIND() macro: */
+    PyUnicode_1BYTE_KIND = 1,
+    PyUnicode_2BYTE_KIND = 2,
+    PyUnicode_4BYTE_KIND = 4
+};
+
+#define EXT_UNI_KIND_DECL(var)
+#define EXT_UNI_KIND_SET(var, value)
+
+#if Py_UNICODE_SIZE == 2
+#define PyUnicode_KIND(x) (2)
+#elif Py_UNICODE_SIZE == 4
+#define PyUnicode_KIND(x) (4)
+#else
+#error "Cannot recognize sizeof(Py_UNICODE)"
+#endif
+
+#define PyUnicode_GET_LENGTH(x) (PyUnicode_GET_SIZE(x))
+#define PyUnicode_DATA(x) ((void *)PyUnicode_AS_UNICODE(x))
+#define PyUnicode_READ(kind, data, index) \
+    ((Py_UNICODE) (((const Py_UNICODE *)(data))[(index)]))
+#define PyUnicode_WRITE(kind, data, index, value) \
+    do { \
+        ((Py_UNICODE *)(data))[(index)] = (Py_UNICODE)(value); \
+    } while(0)
+
+#define PyUnicode_FromKindAndData(kind, data, length) \
+    (PyUnicode_FromUnicode((Py_UNICODE *)data, length))
+#define EXT_UNI_MAX_DECL(var)
+#define EXT_UNI_MAX_SET(var, value)
+#define EXT_UNI_MAX_LEVEL(var, add)
+#define PyUnicode_New(size, maxchar) PyUnicode_FromUnicode(NULL, size)
+
+#else
+
+#ifndef EXT_PEP393
+#define EXT_PEP393
+#endif
+
+#define EXT_UNI_CP Py_UCS4
+
+#define EXT_UNI_KIND_DECL(var) enum PyUnicode_Kind var;
+#define EXT_UNI_KIND_SET(var, value) var = (value);
+
+#define EXT_UNI_MAX_DECL(var) Py_UCS4 var;
+#define EXT_UNI_MAX_SET(var, value) (var) = (value);
+#define EXT_UNI_MAX_LEVEL(var, add) do { \
+    if ((add) > (var)) (var) = (add);  \
+} while(0)
+
+#endif
+
+#define U(c) ((EXT_UNI_CP)(c))
+
+
+/*
+ * Module init tools
+ */
 #define EXT_INIT_TYPE(module, type) do { \
     if (PyType_Ready(type) < 0)          \
         EXT_INIT_ERROR(module);          \
@@ -310,4 +392,4 @@ static void prefix##_dealloc(void *self)        \
     (Py_TYPE(self))->tp_free((PyObject *)self); \
 }
 
-#endif /* SETUP_CEXT_H */
+#endif /* CEXT_H */

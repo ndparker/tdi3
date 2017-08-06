@@ -19,17 +19,34 @@ u"""
  See the License for the specific language governing permissions and
  limitations under the License.
 
-================================
-  Template Data Interface (TDI)
-================================
+================
+ Misc Utilities
+================
 
-Template Data Interface (TDI).
+Misc utilities.
 """
 __author__ = u"Andr\xe9 Malo"
 __docformat__ = "restructuredtext en"
-__license__ = "Apache License, Version 2.0"
-__version__ = '1.0.0'
 
-from . import _util
 
-__all__ = _util.find_public(globals())
+def find_public(space):
+    """
+    Determine all public names in space
+
+    :Parameters:
+      `space` : ``dict``
+        Name space to inspect
+
+    :Return: List of public names
+    :Rtype: ``list``
+    """
+    if '__all__' in space:
+        return list(space['__all__'])
+    return [key for key in space.keys() if not key.startswith('_')]
+
+
+# pylint: disable = invalid-name
+if str is bytes:
+    ur = lambda s: s.decode('ascii')
+else:
+    ur = lambda s: s
