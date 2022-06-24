@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 - 2017
+ * Copyright 2013 - 2022
  * Andr\xe9 Malo or his licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,7 +124,7 @@ attribute(PyObject *value, PyObject *encoding, PyObject *errors)
 PyDoc_STRVAR(TDI_TextDecoder_normalize__doc__,
 "normalize(self, name)\n\
 \n\
-:See: `abstract.Decoder`");
+:See: :class:`abstract.Decoder`");
 
 static PyObject *
 TDI_TextDecoder_normalize(tdi_text_decoder_t *self, PyObject *args,
@@ -144,7 +144,7 @@ TDI_TextDecoder_normalize(tdi_text_decoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextDecoder_decode__doc__,
 "decode(self, value, errors='strict')\n\
 \n\
-:See: `abstract.Decoder`");
+:See: :class:`abstract.Decoder`");
 
 static PyObject *
 TDI_TextDecoder_decode(tdi_text_decoder_t *self, PyObject *args,
@@ -164,7 +164,7 @@ TDI_TextDecoder_decode(tdi_text_decoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextDecoder_attribute__doc__,
 "attribute(self, value, errors='strict')\n\
 \n\
-:See: `abstract.Decoder`");
+:See: :class:`abstract.Decoder`");
 
 static PyObject *
 TDI_TextDecoder_attribute(tdi_text_decoder_t *self, PyObject *args,
@@ -183,17 +183,17 @@ TDI_TextDecoder_attribute(tdi_text_decoder_t *self, PyObject *args,
 
 static struct PyMethodDef TDI_TextDecoder_methods[] = {
     {"normalize",
-     (PyCFunction)TDI_TextDecoder_normalize,          METH_VARARGS
+     EXT_CFUNC(TDI_TextDecoder_normalize),            METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextDecoder_normalize__doc__},
 
     {"decode",
-     (PyCFunction)TDI_TextDecoder_decode,             METH_VARARGS
+     EXT_CFUNC(TDI_TextDecoder_decode),               METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextDecoder_decode__doc__},
 
     {"attribute",
-     (PyCFunction)TDI_TextDecoder_attribute,          METH_VARARGS
+     EXT_CFUNC(TDI_TextDecoder_attribute),            METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextDecoder_attribute__doc__},
 

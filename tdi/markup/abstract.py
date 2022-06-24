@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2017
+ Copyright 2017 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,7 +26,6 @@ u"""
 ABCs used within this (sub)package.
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"
 
 from .. import _abstract
 
@@ -37,8 +36,8 @@ class Decoder(_abstract.base):
     """
     Decoder ABC
 
-    :IVariables:
-      `encoding` : ``str``
+    Attributes:
+      encoding (str):
         The source encoding
     """
 
@@ -47,12 +46,12 @@ class Decoder(_abstract.base):
         """
         Normalize a name
 
-        :Parameters:
-          `name` : ``str``
+        Parameters:
+          name (str):
             The name to normalize
 
-        :Return: The normalized name
-        :Rtype: ``str``
+        Returns:
+          str: The normalized name
         """
 
     @_abstract.method
@@ -60,15 +59,15 @@ class Decoder(_abstract.base):
         """
         Decode an arbitrary value
 
-        :Parameters:
-          `value` : ``bytes``
+        Parameters:
+          value (bytes):
             attribute value
 
-          `errors` : ``str``
+          errors (str):
             Error handler description
 
-        :Return: The decoded value
-        :Rtype: text
+        Returns:
+          text: The decoded value
         """
 
     @_abstract.method
@@ -76,15 +75,15 @@ class Decoder(_abstract.base):
         """
         Decode a raw attribute value
 
-        :Parameters:
-          `value` : ``bytes``
+        Parameters:
+          value (bytes):
             Raw attribute value
 
-          `errors` : ``str``
+          errors (str):
             Error handler description
 
-        :Return: The decoded attribute
-        :Rtype: text
+        Returns:
+          text: The decoded attribute
         """
 
 
@@ -92,8 +91,8 @@ class Encoder(_abstract.base):
     """
     Encoder Interface
 
-    :IVariables:
-      `encoding` : ``str``
+    Attributes:
+      encoding (str):
         The target encoding
     """
 
@@ -102,19 +101,19 @@ class Encoder(_abstract.base):
         """
         Build a starttag
 
-        :Parameters:
-          `name` : ``bytes``
+        Parameters:
+          name (bytes):
             The tag name (already encoded)
 
-          `attr` : iterable
+          attr (iterable):
             The tag attributes (``((name, value), ...)``), aleady quoted,
             escaped and encoded
 
-          `closed` : ``bool``
+          closed (bool):
             Closed tag?
 
-        :Return: The starttag
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The starttag
         """
 
     @_abstract.method
@@ -122,12 +121,12 @@ class Encoder(_abstract.base):
         """
         Build an endtag
 
-        :Parameters:
-          `name` : ``bytes``
+        Parameters:
+          name (bytes):
             Tag name (already encoded)
 
-        :Return: The endtag
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The endtag
         """
 
     @_abstract.method
@@ -135,12 +134,12 @@ class Encoder(_abstract.base):
         """
         Encode a name (tag or attribute name)
 
-        :Parameters:
-          `name` : ``basestring``
+        Parameters:
+          name (str or bytes):
             Name
 
-        :Return: The encoded name
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The encoded name
         """
 
     @_abstract.method
@@ -151,12 +150,12 @@ class Encoder(_abstract.base):
         Note that this method also needs to put quotes around the attribute
         (if applicable).
 
-        :Parameters:
-          `value` : ``basestring``
+        Parameters:
+          value (str or bytes):
             The value to encode
 
-        :Return: The encoded attribute value
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The encoded attribute value
         """
 
     @_abstract.method
@@ -164,25 +163,25 @@ class Encoder(_abstract.base):
         """
         Regular text content encoder
 
-        :Parameters:
-          `value` : ``basestring``
+        Parameters:
+          value (str or bytes):
             The value to encode
 
-        :Return: The encoded text
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The encoded text
         """
 
     @_abstract.method
     def encode(self, value):
         """
-        Character-encode a unicode string to `encoding`
+        Character-encode a unicode string to :attr:`encoding`
 
-        :Parameters:
-          `value` : ``unicode``
+        Parameters:
+          value (text):
             The value to encode
 
-        :Return: The encoded value
-        :Rtype: ``bytes``
+        Returns:
+          bytes: The encoded value
         """
 
     @_abstract.method
@@ -190,10 +189,10 @@ class Encoder(_abstract.base):
         """
         Escape text (scan for sequences needing escaping and escape them)
 
-        :Parameters:
-          `value` : ``basestring``
+        Parameters:
+          value (str or bytes):
             The value to escape
 
-        :Return: The escaped value
-        :Rtype: ``basestring``
+        Returns:
+          str or bytes: The escaped value
         """

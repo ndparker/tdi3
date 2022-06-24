@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2017
+ Copyright 2017 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,7 +26,6 @@ u"""
 ABCs base setup
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"
 
 import abc as _abc
 

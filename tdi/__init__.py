@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2017
+ Copyright 2006 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,7 +26,6 @@ u"""
 Template Data Interface (TDI).
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"
 __license__ = "Apache License, Version 2.0"
 __version__ = '1.0.0'
 

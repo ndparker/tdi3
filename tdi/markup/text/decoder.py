@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2013 - 2017
+ Copyright 2013 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,7 +26,6 @@ u"""
 Text Input Decoder.
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"
 
 import functools as _ft
 import re as _re
@@ -50,19 +49,11 @@ class TextDecoder(object):
     """
     Decoder for text input
 
-    :IVariables:
-      `encoding` : ``str``
-        Character encoding
+    :See: :class:`abstract.Decoder`
     """
 
     def __init__(self, encoding):
-        """
-        Initialization
-
-        :Parameters:
-          `encoding` : ``str``
-            Character encoding
-        """
+        """ :See: :class:`abstract.Decoder` """
         self.encoding = encoding
 
     def normalize(self, name):  # pylint: disable = no-self-use
@@ -70,11 +61,11 @@ class TextDecoder(object):
         return name
 
     def decode(self, value, errors='strict'):
-        """ :See: `abstract.Decoder` """
+        """ :See: :class:`abstract.Decoder` """
         return value.decode(self.encoding, errors)
 
     def attribute(self, value, errors='strict'):
-        """ :See: `abstract.Decoder` """
+        """ :See: :class:`abstract.Decoder` """
         value = value.decode(self.encoding, errors)
         if value.startswith(u'"') or value.startswith(u"'"):
             value = value[1:-1]

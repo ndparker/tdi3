@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2017
+ Copyright 2017 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,4 +26,3 @@ u"""
 TDI markup tests
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"

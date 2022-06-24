@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 - 2017
+ * Copyright 2006 - 2021
  * Andr\xe9 Malo or his licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -31,7 +31,7 @@ EXT_METHODS = {
 PyDoc_STRVAR(EXT_DOCS_VAR,
 ":Copyright:\n\
 \n\
- Copyright 2006 - 2017\n\
+ Copyright 2006 - 2022\n\
  Andr\xc3\xa9 Malo or his licensors, as applicable\n\
 \n\
 :License:\n\
@@ -65,7 +65,6 @@ EXT_INIT_FUNC {
 
     EXT_DOC_UNICODE(m);
 
-    EXT_ADD_STRING(m, "__docformat__", "restructuredtext en");
     EXT_ADD_UNICODE(m, "__author__", "Andr\xe9 Malo", "latin-1");
     EXT_ADD_UNICODE(m, "__license__", "Apache License, Version 2.0", "ascii");
 

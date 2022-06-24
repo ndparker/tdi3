@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2013 - 2017
+ Copyright 2013 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,4 +26,3 @@ u"""
 This package contains TDI's builtin text markup.
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"

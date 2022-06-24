@@ -35,7 +35,7 @@ project with python 2/3 compatibility in mind.
 
 ## COPYRIGHT AND LICENSE
 
-Copyright 2006 - 2017
+Copyright 2006 - 2022
 André Malo or his licensors, as applicable.
 
 The whole package is distributed under the Apache License Version 2.0.
@@ -45,7 +45,7 @@ at: <http://www.apache.org/licenses/LICENSE-2.0>.
 
 ## SYSTEM REQUIREMENTS
 
-You need at least python 2.7 or Python 3 starting with version 3.4.
+You need at least python 2.7 or Python 3 starting with version 3.6.
 
 You also need a build environment for python C extensions (i.e. a compiler
 and the python development files).
@@ -92,7 +92,7 @@ send a mail to <tdi-bugs@perlig.de>.
 
 ## AUTHOR INFORMATION
 
-André "nd" Malo <nd@perlig.de>, GPG: 0x8103A37E
+André "nd" Malo <nd@perlig.de>, GPG: 0x029C942244325167
 
 
 >  If God intended people to be naked, they would be born that way.

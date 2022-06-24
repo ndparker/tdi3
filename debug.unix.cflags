@@ -6,23 +6,24 @@
 -fprofile-arcs
 
 # don't compile on weird code
--std=c89 -pedantic -fno-strict-aliasing -Werror
--Wnested-externs
--Wcast-align
--Wbad-function-cast
--Wshadow
--Wundef
--Wdeclaration-after-statement
--Wstrict-overflow=4
--Wmissing-include-dirs
--Winit-self
--Wextra
+# -std=c99
+-pedantic -fno-strict-aliasing -Werror
 -Wall
--Wno-overlength-strings
--Wno-long-long
--Wno-unused-parameter
--Wno-missing-field-initializers
+-Wbad-function-cast
+-Wcast-align
 -Wcast-qual
--Wmissing-declarations
--Wmissing-prototypes
 -Wconversion
+-Wdeclaration-after-statement
+-Wextra
+-Winit-self
+-Wmissing-declarations
+# -Wmissing-include-dirs
+-Wmissing-prototypes
+-Wnested-externs
+-Wno-long-long
+-Wno-missing-field-initializers
+-Wno-overlength-strings
+-Wno-unused-parameter
+# -Wshadow
+-Wstrict-overflow=4
+-Wundef

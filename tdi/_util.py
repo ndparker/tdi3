@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2017
+ Copyright 2006 - 2022
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -26,26 +26,25 @@ u"""
 Misc utilities.
 """
 __author__ = u"Andr\xe9 Malo"
-__docformat__ = "restructuredtext en"
 
 
 def find_public(space):
     """
     Determine all public names in space
 
-    :Parameters:
-      `space` : ``dict``
+    Parameters:
+      space (dict):
         Name space to inspect
 
-    :Return: List of public names
-    :Rtype: ``list``
+    Returns:
+      list: List of public names
     """
     if '__all__' in space:
         return list(space['__all__'])
     return [key for key in space.keys() if not key.startswith('_')]
 
 
-# pylint: disable = invalid-name
+# pylint: disable = invalid-name, unnecessary-lambda-assignment
 if str is bytes:
     ur = lambda s: s.decode('ascii')
 else:

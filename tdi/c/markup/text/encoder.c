@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 - 2017
+ * Copyright 2013 - 2022
  * Andr\xe9 Malo or his licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -448,7 +448,7 @@ encode_escape(PyObject *value, PyObject *encoding)
 PyDoc_STRVAR(TDI_TextEncoder_starttag__doc__,
 "starttag(self, name, attr, closed)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_starttag(tdi_text_encoder_t *self, PyObject *args,
@@ -496,7 +496,7 @@ error_name:
 PyDoc_STRVAR(TDI_TextEncoder_endtag__doc__,
 "endtag(self, name)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_endtag(tdi_text_encoder_t *self, PyObject *args,
@@ -535,7 +535,7 @@ error_name:
 PyDoc_STRVAR(TDI_TextEncoder_name__doc__,
 "name(self, name)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_name(tdi_text_encoder_t *self, PyObject *args,
@@ -558,7 +558,7 @@ TDI_TextEncoder_name(tdi_text_encoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextEncoder_attribute__doc__,
 "attribute(self, value)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_attribute(tdi_text_encoder_t *self, PyObject *args,
@@ -581,7 +581,7 @@ TDI_TextEncoder_attribute(tdi_text_encoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextEncoder_content__doc__,
 "content(self, value)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_content(tdi_text_encoder_t *self, PyObject *args,
@@ -604,7 +604,7 @@ TDI_TextEncoder_content(tdi_text_encoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextEncoder_encode__doc__,
 "encode(self, value)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_encode(tdi_text_encoder_t *self, PyObject *args,
@@ -627,7 +627,7 @@ TDI_TextEncoder_encode(tdi_text_encoder_t *self, PyObject *args,
 PyDoc_STRVAR(TDI_TextEncoder_escape__doc__,
 "escape(self, value)\n\
 \n\
-:See: `abstract.Encoder`");
+:See: :class:`abstract.Encoder`");
 
 static PyObject *
 TDI_TextEncoder_escape(tdi_text_encoder_t *self, PyObject *args,
@@ -649,37 +649,37 @@ TDI_TextEncoder_escape(tdi_text_encoder_t *self, PyObject *args,
 
 static struct PyMethodDef TDI_TextEncoder_methods[] = {
     {"starttag",
-     (PyCFunction)TDI_TextEncoder_starttag,           METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_starttag),             METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_starttag__doc__},
 
     {"endtag",
-     (PyCFunction)TDI_TextEncoder_endtag,             METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_endtag),               METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_endtag__doc__},
 
     {"name",
-     (PyCFunction)TDI_TextEncoder_name,               METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_name),                 METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_name__doc__},
 
     {"attribute",
-     (PyCFunction)TDI_TextEncoder_attribute,          METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_attribute),            METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_attribute__doc__},
 
     {"content",
-     (PyCFunction)TDI_TextEncoder_content,            METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_content),              METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_content__doc__},
 
     {"encode",
-     (PyCFunction)TDI_TextEncoder_encode,             METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_encode),               METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_encode__doc__},
 
     {"escape",
-     (PyCFunction)TDI_TextEncoder_escape,             METH_VARARGS
+     EXT_CFUNC(TDI_TextEncoder_escape),               METH_VARARGS
                                                     | METH_KEYWORDS,
      TDI_TextEncoder_escape__doc__},
 
