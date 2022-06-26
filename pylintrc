@@ -98,6 +98,7 @@ disable=
     consider-using-f-string,
     bad-file-encoding,
 
+    super-with-arguments,
     useless-object-inheritance,
     no-else-return,
     no-else-raise,

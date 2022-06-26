@@ -31,6 +31,8 @@ from .. import _abstract
 
 impl = _abstract.make_impl(globals())
 
+# pylint: disable = too-many-ancestors
+
 
 class Decoder(_abstract.base):
     """
@@ -195,4 +197,44 @@ class Encoder(_abstract.base):
 
         Returns:
           str or bytes: The escaped value
+        """
+
+
+class AttributeAnalyzer(_abstract.base):
+    """
+    Interface for Attribute analyzers
+
+    Attributes:
+      attribute (str):
+        The attribute name
+
+      scope (str):
+        The scope attribute name
+    """
+
+    @_abstract.method
+    def __call__(self, normalize, attr, name=''):
+        """
+        Analyze attributes
+
+        Parameters:
+          normalize (callable):
+            Element and attribute name normalizer
+
+          attr (iterable):
+            (key, value) list of attributes. value may be ``None``
+
+          name (str):
+            Name to treat as attribute. Only applied if set and not empty.
+
+        Returns:
+          tuple: The (possibly) reduced attributes and a dict of special
+                 attributes. All of the special attributes are optional:
+
+                 ``attribute``
+                    ``(flags, name)``
+                 ``overlay``
+                    ``(flags, name)`` or ``None``
+                 ``scope``
+                    ``(flags, name)`` or ``None``
         """

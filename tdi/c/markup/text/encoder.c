@@ -97,8 +97,8 @@ encode_starttag(tdi_bytestr_t *name, tdi_attrlist_t *attrs, int closed)
 
     return result;
 
-error_result:
     LCOV_EXCL_START
+error_result:
 
     Py_DECREF(result);
 

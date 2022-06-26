@@ -1,5 +1,5 @@
 /*
- * Copyright 2006 - 2021
+ * Copyright 2006 - 2022
  * Andr\xe9 Malo or his licensors, as applicable
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,6 +17,7 @@
 
 #include "cext.h"
 
+#include "filters/event.h"
 #include "markup/text/decoder.h"
 #include "markup/text/encoder.h"
 
@@ -67,6 +68,9 @@ EXT_INIT_FUNC {
 
     EXT_ADD_UNICODE(m, "__author__", "Andr\xe9 Malo", "latin-1");
     EXT_ADD_UNICODE(m, "__license__", "Apache License, Version 2.0", "ascii");
+
+    EXT_INIT_TYPE(m, &TDI_BaseEventFilter);
+    EXT_ADD_TYPE(m, "BaseEventFilter", &TDI_BaseEventFilter);
 
     EXT_INIT_TYPE(m, &TDI_TextDecoder);
     EXT_ADD_TYPE(m, "TextDecoder", &TDI_TextDecoder);

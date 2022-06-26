@@ -135,6 +135,11 @@ def patched_import(what, how=unset):
         _sys.modules.update(realmodules)
 
 
+def calls(value):
+    """ Map calls to list of tuples """
+    return list(map(tuple, value.mock_calls))
+
+
 def python_impl(*module):
     """
     Decorator to ensure python implementation usage in module(s)
@@ -293,6 +298,17 @@ class badstr(object):  # pylint: disable = invalid-name
     def __str__(self):
         raise RuntimeError("yo")
 badstr = badstr()
+
+
+class badeqstr(str):  # pylint: disable = invalid-name
+    """ bad == """
+    def __eq__(self, other):
+        raise RuntimeError("yo")
+
+    def __hash__(self):
+        return hash("yo")
+
+badeqstr = badeqstr()
 
 
 class badbytes(object):  # pylint: disable = invalid-name

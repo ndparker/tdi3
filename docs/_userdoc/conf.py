@@ -35,7 +35,9 @@ def setup(app):
 # https://www.sphinx-doc.org/en/master/usage/extensions/napoleon.html#configuration
 napoleon_preprocess_types = True
 napoleon_type_aliases = {
-    # 'Symbols': 'gensaschema.Symbols',
+    'abstract.Encoder': 'tdi.markup.abstract.Encoder',
+    'abstract.Decoder': 'tdi.markup.abstract.Decoder',
+    'abstract.AttributeAnalyzer': 'tdi.markup.abstract.AttributeAnalyzer',
 }
 
 

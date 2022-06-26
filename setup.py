@@ -160,6 +160,9 @@ class Extension(_setuptools.Extension):
 EXTENSIONS = lambda v: [
     Extension('tdi.c._tdi_impl', [
         "tdi/c/main.c",
+        "tdi/c/util.c",
+
+        "tdi/c/filters/event.c",
 
         "tdi/c/markup/attr.c",
         "tdi/c/markup/text/decoder.c",
@@ -167,6 +170,10 @@ EXTENSIONS = lambda v: [
     ], depends=[
         "tdi/c/include/bytestr.h",
         "tdi/c/include/length.h",
+        "tdi/c/include/util.h",
+
+        "tdi/c/include/filters/event.h",
+
         "tdi/c/include/markup/attr.h",
         "tdi/c/include/markup/text/decoder.h",
         "tdi/c/include/markup/text/encoder.h",

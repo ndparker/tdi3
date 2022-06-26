@@ -31,3 +31,150 @@ from . import _abstract
 
 base, method = _abstract.base, _abstract.method
 impl = _abstract.make_impl(globals())
+
+
+class Listener(_abstract.base):
+    """ ABC for a parser/lexer event listener """
+
+    @_abstract.method
+    def handle_text(self, data):
+        """
+        Handle text data
+
+        Parameters:
+          data (str):
+            The text data to handle
+        """
+
+    @_abstract.method
+    def handle_escape(self, escaped, data):
+        """
+        Handle escaped data
+
+        Parameters:
+          escaped (str):
+            The escaped string (unescaped, despite the name)
+
+          data (str):
+            The full escape sequence
+        """
+
+    @_abstract.method
+    def handle_starttag(self, name, attrs, closed, data):
+        """
+        Handle start tag (``<foo ....>``)
+
+        Parameters:
+          name (str):
+            The element name (``''`` for empty tag)
+
+          attrs (list):
+            The attributes (``[(name, value), ...]``), where ``value``
+            may be ``None`` for short attributes.
+
+          closed (bool):
+            Is the start tag closed? In that case, no endtag will be needed.
+
+          data (str):
+            The raw tag string
+        """
+
+    @_abstract.method
+    def handle_endtag(self, name, data):
+        """
+        Handle end tag (``</foo>``)
+
+        Parameters:
+          name (str):
+            The element name (``''`` for empty tag)
+
+          data (str):
+            The raw tag string
+        """
+
+    @_abstract.method
+    def handle_comment(self, data):
+        """
+        Handle comment (``<!-- ... -->``)
+
+        Parameters:
+          data (str):
+            The comment block
+        """
+
+    @_abstract.method
+    def handle_msection(self, name, value, data):
+        """
+        Handle marked section (``<![name[...]]>`` or ``<![name ...]>``)
+
+        The ``<![name ... ]>`` sections are MS specific. ``markupbase``
+        comments::
+
+          # An analysis of the MS-Word extensions is available at
+          # http://www.planetpublish.com/xmlarena/xap/Thursday/WordtoXML.pdf
+
+        Parameters:
+          name (str):
+            The section name
+
+          value (str):
+            The section value
+
+          data (str):
+            The section block
+        """
+
+    @_abstract.method
+    def handle_decl(self, name, value, data):
+        """
+        Handle declaration (``<!...>``)
+
+        Parameters:
+          name (str):
+            The name of the declaration block
+
+          value (str):
+            The value of the declaration block
+
+          data (str):
+            The declaration block
+        """
+
+    @_abstract.method
+    def handle_pi(self, data):
+        """
+        Handle Processing instruction (``<? ... ?>``)
+
+        Parameters:
+          data (str):
+            The PI block
+        """
+
+
+class BuildingListener(Listener):
+    """
+    Extensions to the listener interface
+
+    Attributes:
+      encoder (abstract.Encoder):
+        Encoder
+
+      decoder (abstract.Decoder):
+        Decoder
+
+      encoding (str):
+        Encoding of the template
+
+      analyze (abstract.AttributeAnalyzer):
+        Attribute analyzer
+    """
+
+    @_abstract.method
+    def handle_encoding(self, encoding):
+        """
+        Handle an encoding declaration
+
+        Parameters:
+          encoding (str):
+            The encoding to handle
+        """
