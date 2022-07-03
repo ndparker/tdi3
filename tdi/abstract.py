@@ -33,6 +33,27 @@ base, method = _abstract.base, _abstract.method
 impl = _abstract.make_impl(globals())
 
 
+class Parser(_abstract.base):
+    """ ABC for template parsers """
+
+    def feed(self, food):
+        """
+        Take a chunk of data and generate parser events out of it
+
+        Parameters:
+          food (text or bytes):
+            The data to process
+        """
+
+    def finalize(self):
+        """
+        Finish the parser
+
+        Calling `finalize` indicates that `feed` is not called any more
+        and advises the parser to flush all pending events.
+        """
+
+
 class Listener(_abstract.base):
     """ ABC for a parser/lexer event listener """
 

@@ -38,6 +38,7 @@ napoleon_type_aliases = {
     'abstract.Encoder': 'tdi.markup.abstract.Encoder',
     'abstract.Decoder': 'tdi.markup.abstract.Decoder',
     'abstract.AttributeAnalyzer': 'tdi.markup.abstract.AttributeAnalyzer',
+    'abstract.Listener': 'tdi.abstract.Listener',
 }
 
 
