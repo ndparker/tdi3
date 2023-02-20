@@ -44,10 +44,11 @@ class BaseEventFilter(object):
       builder (abstract.BuildingListener):
         The next level builder
     """
+
     __slots__ = ('builder', '__weakref__')
 
     def __new__(cls, *args, **kwargs):
-        """ Construction """
+        """Construction"""
         result = super(BaseEventFilter, cls).__new__(cls)
         result.builder = None
         return result
@@ -100,6 +101,7 @@ class FilterFilename(BaseEventFilter):
       filename (str):
         The provided filename
     """
+
     __slots__ = ('filename',)
 
     def __init__(self, builder, filename):

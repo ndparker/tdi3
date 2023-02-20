@@ -43,7 +43,7 @@ c = _test.c_impl(_event)
 
 @multi
 def test_base_init():
-    """ BaseEventFilter inits and delegates properly """
+    """BaseEventFilter inits and delegates properly"""
     builder = _test.mock.MagicMock()
     del builder.meh
     inst = _event.BaseEventFilter(builder)
@@ -61,7 +61,7 @@ def test_base_init():
 
 @multi
 def test_base_assign():
-    """ BaseEventFilter assigns builder """
+    """BaseEventFilter assigns builder"""
     builder = _test.mock.MagicMock()
     builder2 = _test.mock.MagicMock()
     inst = _event.BaseEventFilter(builder)
@@ -86,7 +86,7 @@ def test_base_assign():
 
 @multi
 def test_base_weakref():
-    """ BaseEventFilter accepts and clears weakrefs """
+    """BaseEventFilter accepts and clears weakrefs"""
     builder = _test.mock.MagicMock()
     inst = _event.BaseEventFilter(builder)
     ref = _weakref.ref(inst)
@@ -98,7 +98,8 @@ def test_base_weakref():
 
 @multi
 def test_base_bad_attr():
-    """ BaseEventFilter deals with bad attributes """
+    """BaseEventFilter deals with bad attributes"""
+
     class Foo(_event.BaseEventFilter):
         @property
         def bad(self):
@@ -137,7 +138,7 @@ def test_base_bad_attr():
 
 @multi
 def test_base_bad_eq():
-    """ BaseEventFilter deals with bad attribute names """
+    """BaseEventFilter deals with bad attribute names"""
     builder = _test.mock.MagicMock()
     inst = _event.BaseEventFilter(builder)
 
@@ -149,7 +150,8 @@ def test_base_bad_eq():
 
 @multi
 def test_base_bad_init():
-    """ BaseEventFilter deals with bad init """
+    """BaseEventFilter deals with bad init"""
+
     class Foo(_event.BaseEventFilter):
         def __init__(self):  # pylint: disable = super-init-not-called
             pass
@@ -165,13 +167,13 @@ def test_base_bad_init():
         _event.BaseEventFilter()
     assert e.value.args in (
         # py3.10
-        ("BaseEventFilter.__init__() missing 1 required positional "
-         "argument: 'builder'",),
-
+        (
+            "BaseEventFilter.__init__() missing 1 required positional "
+            "argument: 'builder'",
+        ),
         # py3.9
         ("__init__() missing 1 required positional argument: 'builder'",),
         ("function missing required argument 'builder' (pos 1)",),
-
         # py2.7
         ('__init__() takes exactly 2 arguments (1 given)',),
         ("Required argument 'builder' (pos 1) not found",),
@@ -180,7 +182,7 @@ def test_base_bad_init():
 
 @multi
 def test_filename_init():
-    """ FilterFilename inits and delegates properly """
+    """FilterFilename inits and delegates properly"""
     builder = _test.mock.MagicMock()
     del builder.meh
     inst = _event.FilterFilename(builder, 'bar.html')
@@ -198,7 +200,7 @@ def test_filename_init():
 
 @multi
 def test_filename_weakref():
-    """ FilterFilename accepts and clears weakrefs """
+    """FilterFilename accepts and clears weakrefs"""
     builder = _test.mock.MagicMock()
     inst = _event.FilterFilename(builder, 'foo.html')
     ref = _weakref.ref(inst)

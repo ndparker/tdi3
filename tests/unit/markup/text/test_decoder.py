@@ -42,7 +42,7 @@ c = _test.c_impl(_decoder)
 
 @multi
 def test_init():
-    """ markup.decoder.text.TextDecoder() inits properly """
+    """markup.decoder.text.TextDecoder() inits properly"""
     inst = _decoder.TextDecoder('foo')
     assert isinstance(inst, _abstract.Decoder)
     assert inst.encoding == 'foo'
@@ -50,7 +50,7 @@ def test_init():
 
 @multi
 def test_normalize():
-    """ markup.decoder.text.TextDecoder().normalize() just passes through """
+    """markup.decoder.text.TextDecoder().normalize() just passes through"""
     inst = _decoder.TextDecoder('foo')
     mocked = object()
     result = inst.normalize(mocked)
@@ -59,7 +59,7 @@ def test_normalize():
 
 @c
 def test_normalize_arg_error():
-    """ markup.decoder.text.TextDecoder().normalize() checks arguments """
+    """markup.decoder.text.TextDecoder().normalize() checks arguments"""
     inst = _decoder.TextDecoder('utf-8')
     with raises(TypeError):
         inst.normalize()  # pylint: disable = no-value-for-parameter
@@ -67,7 +67,7 @@ def test_normalize_arg_error():
 
 @multi
 def test_decode():
-    """ markup.decoder.text.TextDecoder().decode() decodes to unicode """
+    """markup.decoder.text.TextDecoder().decode() decodes to unicode"""
     inst = _decoder.TextDecoder('utf-8')
     result = inst.decode(b'Andr\xc3\xa9')
     assert result == u'Andr\xe9'
@@ -75,7 +75,7 @@ def test_decode():
 
 @c
 def test_decode_arg_error():
-    """ markup.decoder.text.TextDecoder().decode() checks arguments """
+    """markup.decoder.text.TextDecoder().decode() checks arguments"""
     inst = _decoder.TextDecoder('utf-8')
     with raises(TypeError):
         inst.decode()  # pylint: disable = no-value-for-parameter
@@ -93,7 +93,7 @@ def test_decode_badstring():
 
 @multi
 def test_decode_strict_error():
-    """ markup.decoder.text.TextDecoder().decode() raises on strict error """
+    """markup.decoder.text.TextDecoder().decode() raises on strict error"""
     inst = _decoder.TextDecoder('utf-8')
     with raises(UnicodeDecodeError):
         inst.decode(b'Andr\xe9')
@@ -101,7 +101,7 @@ def test_decode_strict_error():
 
 @multi
 def test_attribute():
-    """ markup.decoder.text.TextDecoder().attribute() decodes to unicode """
+    """markup.decoder.text.TextDecoder().attribute() decodes to unicode"""
     inst = _decoder.TextDecoder('utf-8')
 
     result = inst.attribute(b'Andr\xc3\xa9')
@@ -113,7 +113,7 @@ def test_attribute():
 
 @multi
 def test_attribute_strip():
-    """ markup.decoder.text.TextDecoder().attribute() strips decoded value """
+    """markup.decoder.text.TextDecoder().attribute() strips decoded value"""
     inst = _decoder.TextDecoder('utf-8')
 
     result = inst.attribute(b'"Andr\xc3\xa9')
@@ -147,7 +147,7 @@ def test_attribute_slash():
 
 @c
 def test_attribute_arg_error():
-    """ markup.decoder.text.TextDecoder().attribute() checks arguments """
+    """markup.decoder.text.TextDecoder().attribute() checks arguments"""
     inst = _decoder.TextDecoder('utf-8')
     with raises(TypeError):
         inst.attribute()  # pylint: disable = no-value-for-parameter
@@ -155,7 +155,7 @@ def test_attribute_arg_error():
 
 @multi
 def test_weakref():
-    """ markup.decoder.text.TextDecoder() accepts and clears weakrefs """
+    """markup.decoder.text.TextDecoder() accepts and clears weakrefs"""
     inst = _decoder.TextDecoder('foo')
     ref = _weakref.ref(inst)
 
@@ -166,7 +166,7 @@ def test_weakref():
 
 @c
 def test_new_argerror():
-    """ markup.decoder.text.TextDecoder() checks arguments """
+    """markup.decoder.text.TextDecoder() checks arguments"""
     with raises(TypeError):
         _decoder.TextDecoder()  # pylint: disable = no-value-for-parameter
 
@@ -176,7 +176,7 @@ def test_new_argerror():
 
 @c
 def test_setencoding():
-    """ markup.decoder.text.TextDecoder() accepts encoding """
+    """markup.decoder.text.TextDecoder() accepts encoding"""
     inst = _decoder.TextDecoder('foo')
     inst.encoding = 'bar'
 

@@ -33,17 +33,21 @@ from ... import filters as _filters
 
 
 class EncodingDetectFilter(_filters.BaseEventFilter):
-    """ Extract template encoding and pass it properly to the builder """
+    """Extract template encoding and pass it properly to the builder"""
+
     __slots__ = ()
 
     #: Regex matcher to match encoding declarations
     #:
     #: :Type: callable
-    _PI_MATCH = _re.compile(r'''
+    _PI_MATCH = _re.compile(
+        r'''
         \[\? \s*
         [eE][nN][cC][oO][dD][iI][nN][gG] (?:\s+|\s*=\s*) (?P<enc>[^=\s?]+)
         \s* \?\]$
-    ''', _re.X).match
+    ''',
+        _re.X,
+    ).match
 
     def handle_pi(self, data):
         """

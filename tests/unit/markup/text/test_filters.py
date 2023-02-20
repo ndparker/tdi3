@@ -37,7 +37,7 @@ c = _test.c_impl(_filters)
 
 @multi
 def test_init():
-    """ EncodingDetectFilter() inits properly """
+    """EncodingDetectFilter() inits properly"""
     builder = _test.mock.MagicMock()
     inst = _filters.EncodingDetectFilter(builder)
 
@@ -48,7 +48,7 @@ def test_init():
 
 @multi
 def test_handle_pi():
-    """ EncodingDetectFilter() inits properly """
+    """EncodingDetectFilter() inits properly"""
     builder = _test.mock.MagicMock()
     inst = _filters.EncodingDetectFilter(builder)
 
@@ -59,10 +59,8 @@ def test_handle_pi():
 
     assert _test.calls(builder) == [
         ('handle_pi', ('doh',), {}),
-
         ('handle_encoding', ('latin-1',), {}),
         ('handle_pi', ('[? encoding latin-1 ?]',), {}),
-
         ('handle_encoding', ('utf-8',), {}),
         ('handle_pi', ('[? encoding = utf-8 ?]',), {}),
     ]

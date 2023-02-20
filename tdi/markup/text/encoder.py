@@ -31,6 +31,12 @@ from ... import c as _c
 from .. import abstract as _abstract
 
 
+#: Unicode type
+#:
+#: :Type: type
+_UNI = type(u'')
+
+
 @_abstract.impl('Encoder')
 @_c.impl
 class TextEncoder(object):
@@ -41,11 +47,11 @@ class TextEncoder(object):
     """
 
     def __init__(self, encoding):
-        """ :See: :class:`abstract.Encoder` """
+        """:See: :class:`abstract.Encoder`"""
         self.encoding = encoding
 
     def starttag(self, name, attr, closed):
-        """ :See: :class:`abstract.Encoder` """
+        """:See: :class:`abstract.Encoder`"""
         if str is bytes and not isinstance(name, bytes):
             raise TypeError("expected bytes")
         result = [b'[[' if closed else b'[', name]
@@ -64,90 +70,101 @@ class TextEncoder(object):
         return b''.join(result)
 
     def endtag(self, name):
-        """ :See: :class:`abstract.Encoder` """
+        """:See: :class:`abstract.Encoder`"""
         if str is bytes and not isinstance(name, bytes):
             raise TypeError("expected bytes")
         return name.join([b'[/', b']'])
 
     if bytes is str:
+
         def name(self, name):
-            """ :See: :class:`abstract.Encoder` """
-            if isinstance(name, unicode):  # noqa pylint: disable = undefined-variable
+            """:See: :class:`abstract.Encoder`"""
+            if isinstance(name, _UNI):
                 return name.encode(self.encoding, 'strict')
             return str(name)
+
     else:
+
         def name(self, name):
-            """ :See: :class:`abstract.Encoder` """
+            """:See: :class:`abstract.Encoder`"""
             if isinstance(name, bytes):
                 return name
             return str(name).encode(self.encoding, 'strict')
 
     if bytes is str:
+
         def attribute(self, value):
-            """ :See: :class:`abstract.Encoder` """
-            if isinstance(value, unicode):  # noqa pylint: disable = undefined-variable
+            """:See: :class:`abstract.Encoder`"""
+            if isinstance(value, _UNI):
                 return (
-                    value
-                    .replace(u'\\', u'\\\\')
-                    .replace(u'"', u'\\"')
-                ).join([u'"', u'"']).encode(self.encoding, 'strict')
+                    (value.replace(u'\\', u'\\\\').replace(u'"', u'\\"'))
+                    .join([u'"', u'"'])
+                    .encode(self.encoding, 'strict')
+                )
 
             return (
-                str(value)
-                .replace('\\', '\\\\')
-                .replace('"', '\\"')
+                str(value).replace('\\', '\\\\').replace('"', '\\"')
             ).join(['"', '"'])
+
     else:
+
         def attribute(self, value):
-            """ :See: :class:`abstract.Encoder` """
+            """:See: :class:`abstract.Encoder`"""
             if isinstance(value, bytes):
                 return (
-                    value
-                    .replace(b'\\', b'\\\\')
-                    .replace(b'"', b'\\"')
+                    value.replace(b'\\', b'\\\\').replace(b'"', b'\\"')
                 ).join([b'"', b'"'])
 
             return (
-                str(value)
-                .replace('\\', '\\\\')
-                .replace('"', '\\"')
-            ).join(['"', '"']).encode(self.encoding, 'strict')
+                (str(value).replace('\\', '\\\\').replace('"', '\\"'))
+                .join(['"', '"'])
+                .encode(self.encoding, 'strict')
+            )
 
     if bytes is str:
+
         def content(self, value):
-            """ :See: :class:`abstract.Encoder` """
-            if isinstance(value, unicode):  # noqa pylint: disable = undefined-variable
+            """:See: :class:`abstract.Encoder`"""
+            if isinstance(value, _UNI):
                 return value.encode(self.encoding, 'strict')
             return str(value)
+
     else:
+
         def content(self, value):
-            """ :See: :class:`abstract.Encoder` """
+            """:See: :class:`abstract.Encoder`"""
             if isinstance(value, bytes):
                 return value
             return str(value).encode(self.encoding, 'strict')
 
     if bytes is str:
+
         def encode(self, value):
-            """ :See: :class:`abstract.Encoder` """
-            if isinstance(value, unicode):  # noqa pylint: disable = undefined-variable
+            """:See: :class:`abstract.Encoder`"""
+            if isinstance(value, _UNI):
                 return value.encode(self.encoding, 'strict')
             return str(value)
+
     else:
+
         def encode(self, value):
-            """ :See: :class:`abstract.Encoder` """
+            """:See: :class:`abstract.Encoder`"""
             if isinstance(value, bytes):
                 return value
             return str(value).encode(self.encoding, 'strict')
 
     if bytes is str:
+
         def escape(self, value):
-            """ :See: :class:`abstract.Encoder` """
-            if isinstance(value, unicode):  # noqa pylint: disable = undefined-variable
+            """:See: :class:`abstract.Encoder`"""
+            if isinstance(value, _UNI):
                 return value.replace(u'[', u'[]')
             return str(value).replace('[', '[]')
+
     else:
+
         def escape(self, value):
-            """ :See: :class:`abstract.Encoder` """
+            """:See: :class:`abstract.Encoder`"""
             if isinstance(value, bytes):
                 return value.replace(b'[', b'[]')
             return str(value).replace('[', '[]')

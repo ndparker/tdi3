@@ -35,16 +35,19 @@ method = _abc.abstractmethod
 
 
 def make_impl(space):
-    """ Make impl function """
+    """Make impl function"""
+
     def impl(*which):
-        """ Register implementation for abstract ... """
+        """Register implementation for abstract ..."""
 
         def inner(cls):
-            """ Decorator """
+            """Decorator"""
             for target in which:
                 if isinstance(target, str):
                     target = space[target]
                 target.register(cls)
             return cls
+
         return inner
+
     return impl

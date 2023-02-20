@@ -30,7 +30,7 @@ __author__ = u"Andr\xe9 Malo"
 
 
 class Error(Exception):
-    """ Base exception for this package """
+    """Base exception for this package"""
 
 
 # Lexer
@@ -38,16 +38,16 @@ class Error(Exception):
 
 
 class LexerError(Error):
-    """ Lexer Error """
+    """Lexer Error"""
 
 
 class LexerEOFError(LexerError):
-    """ Unexpected EOF """
+    """Unexpected EOF"""
 
 
 class LexerStateError(LexerError):
-    """ Invalid state change """
+    """Invalid state change"""
 
 
 class LexerFinalizedError(LexerStateError):
-    """ Lexer was already finalized """
+    """Lexer was already finalized"""

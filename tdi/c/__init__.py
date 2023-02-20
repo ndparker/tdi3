@@ -50,15 +50,17 @@ DEFAULT_TPL = 'tdi.c._tdi_%s'
 
 
 def impl(symbol=None, **kwargs):
-    """ replace symbol with C implementation if available """
+    """replace symbol with C implementation if available"""
+
     def inner(value):
-        """ Decorator """
+        """Decorator"""
         lookup = value.__name__ if symbol is None else symbol
         modname = kwargs.pop('modname', None) or 'impl'
         cimpl = load(modname, **kwargs)
         if cimpl is not None:
             value = getattr(cimpl, lookup, value)
         return value
+
     if callable(symbol) and not kwargs:
         value, symbol = symbol, None
         return inner(value)

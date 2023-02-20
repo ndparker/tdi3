@@ -29,6 +29,7 @@ __author__ = u"Andr\xe9 Malo"
 
 import contextlib as _contextlib
 import functools as _ft
+import re as _re
 import sys as _sys
 import types as _types
 
@@ -52,10 +53,10 @@ unset = object()
 
 
 class Bunch(object):
-    """ Bunch object - represent all init kwargs as attributes """
+    """Bunch object - represent all init kwargs as attributes"""
 
     def __init__(self, **kw):
-        """ Initialization """
+        """Initialization"""
         self.__dict__.update(kw)
 
 
@@ -64,11 +65,11 @@ def patched_import(what, how=unset):
     """
     Context manager to mock an import statement temporarily
 
-    :Parameters:
-      `what` : ``str``
+    Parameters:
+      what (str):
         Name of the module to mock
 
-      `how` : any
+      how (any):
         How should it be replaced? If omitted or `unset`, a new MagicMock
         instance is created. The result is yielded as context.
     """
@@ -83,7 +84,7 @@ def patched_import(what, how=unset):
     )
 
     class FinderLoader(object):
-        """ Finder / Loader for meta path """
+        """Finder / Loader for meta path"""
 
         def __init__(self, fullname, module):
             self.module = module
@@ -96,14 +97,14 @@ def patched_import(what, how=unset):
                 del _sys.modules[fullname]
 
         def find_module(self, fullname, path=None):
-            """ Find the module """
+            """Find the module"""
             # pylint: disable = unused-argument
             if fullname == self.name:
                 return self
             return None
 
         def load_module(self, fullname):
-            """ Load the module """
+            """Load the module"""
             if _is_exc(self.module):
                 raise self.module
             _sys.modules[fullname] = self.module
@@ -136,7 +137,7 @@ def patched_import(what, how=unset):
 
 
 def calls(value):
-    """ Map calls to list of tuples """
+    """Map calls to list of tuples"""
     return list(map(tuple, value.mock_calls))
 
 
@@ -154,10 +155,11 @@ def python_impl(*module):
     assert module
 
     def inner(func):
-        """ Actual decorator """
+        """Actual decorator"""
+
         @_ft.wraps(func)
         def proxy(*args, **kwargs):
-            """ Proxy function, mocking c loader and stuff """
+            """Proxy function, mocking c loader and stuff"""
             try:
                 with patched_import('tdi.c') as c:
                     c.load.side_effect = lambda *x: None
@@ -168,7 +170,9 @@ def python_impl(*module):
             finally:
                 for mod in module:
                     reload(mod)
+
         return proxy
+
     return inner
 
 
@@ -180,16 +184,17 @@ def c_impl(*module, **kwargs):
 
     if c loader doesn't load, the test will be skipped.
 
-    :Parameters:
-      `module` : ``tuple``
+    Parameters:
+      *module:
         Modules to set up (at least one)
 
-      `test` : ``str``
+    Keywords:
+      test (str):
         Module name (part) to pass to the loader in order to test it. If
         omitted or ``None``, 'impl' is used.
 
-    :Return: Decorator
-    :Rtype: callable
+    Returns:
+      callable: Decorator
     """
     assert module
     test = kwargs.pop('test', None)
@@ -199,17 +204,21 @@ def c_impl(*module, **kwargs):
         test = 'impl'
 
     def inner(func):
-        """ Actual decorator """
+        """Actual decorator"""
+
         @_ft.wraps(func)
         def proxy(*args, **kwargs):
-            """ Proxy function """
+            """Proxy function"""
             from tdi import c
+
             if c.load(test) is None:
                 skip("c extension not found")
             for mod in module:
                 reload(mod)
             return func(*args, **kwargs)
+
         return proxy
+
     return inner
 
 
@@ -219,23 +228,24 @@ def multi_impl(space, *module, **kwargs):
 
     Decorator to create test functions for all implementations
 
-    :Parameters:
-      `space` : ``dict``
+    Parameters:
+      space (dict):
         Namespace to create these functions in
 
-      `module` : ``tuple``
+      *module:
         Modules to set up (at least one)
 
-      `test` : ``str``
+    Keywords:
+      test (str):
         Module name (part) to test - passed to c_impl. If omitted or ``None``,
         a default is picked (by c_impl)
 
-      `name` : ``str``
+      name (str):
         test function argument name to pass the current implementation name
         ('py' or 'c'). If omitted or ``None``, the info is not passed.
 
-    :Return: Decorator function
-    :Rtype: callable
+    Returns:
+      callable: Decorator function
     """
     assert module
 
@@ -247,17 +257,20 @@ def multi_impl(space, *module, **kwargs):
     if arg is None:
         arger = lambda x, y: y
     else:
+
         def arger(impl, func):
-            """ Decorator function to inject impl as arg """
+            """Decorator function to inject impl as arg"""
+
             @_ft.wraps(func)
             def proxy(*args, **kwargs):
-                """ Proxy function """
+                """Proxy function"""
                 kwargs[arg] = impl
                 return func(*args, **kwargs)
+
             return proxy
 
     def inner(func):
-        """ Actual decorator """
+        """Actual decorator"""
         name = func.__name__
         if name.startswith('test'):
             name = name[4:]
@@ -276,6 +289,7 @@ def multi_impl(space, *module, **kwargs):
         if cfunc.__doc__:
             cfunc.__doc__ = '[c] %s' % cfunc.__doc__.lstrip()
         return func
+
     return inner
 
 
@@ -283,54 +297,102 @@ def uni(value):
     """
     Create unicode from raw string with unicode escapes
 
-    :Parameters:
-      `value` : ``str``
+    Parameters:
+      value (str):
         String, which encodes to ascii and decodes as unicode_escape
 
-    :Return: The decoded string
-    :Rtype: ``unicode``
+    Returns:
+      text: The decoded string
     """
     return value.encode('ascii').decode('unicode_escape')
 
 
+def dedent(string):
+    """
+    Dedent multiline string
+
+    The function takes care of:
+      - start end being weird in code context
+      - translate newlines to \\n
+
+    Parameters:
+      string (str):
+        The string to dedent
+
+    Returns:
+      str: Dedented string
+    """
+    prefix_match = _re.compile(r"^([ ]*\n?)").match
+    strings = string.replace("\r\n", "\n").lstrip("\n").splitlines(True)
+    if not strings[-1].endswith("\n") and not strings[-1].strip():
+        strings.pop()
+    indented = None
+    lines = []
+    for line in strings:
+        prefix = prefix_match(line).group(1)
+        if prefix[-1:] == '\n':
+            lines.append("")
+            continue
+        indented = (
+            len(prefix) if indented is None else min(len(prefix), indented)
+        )
+        lines.append(line)
+
+    return "".join([line[indented:] if line else "\n" for line in lines])
+
+
 class badstr(object):  # pylint: disable = invalid-name
-    """ bad string """
+    """bad string"""
+
     def __str__(self):
         raise RuntimeError("yo")
+
+
 badstr = badstr()
 
 
 class badeqstr(str):  # pylint: disable = invalid-name
-    """ bad == """
+    """bad =="""
+
     def __eq__(self, other):
         raise RuntimeError("yo")
 
     def __hash__(self):
         return hash("yo")
 
+
 badeqstr = badeqstr()
 
 
 class badbytes(object):  # pylint: disable = invalid-name
-    """ bad bytes """
+    """bad bytes"""
+
     def __bytes__(self):
         raise RuntimeError("yoyo")
+
     if str is bytes:
         __str__ = __bytes__
+
+
 badbytes = badbytes()
 
 
 class badbool(object):  # pylint: disable = invalid-name
-    """ bad bool """
+    """bad bool"""
+
     def __bool__(self):
         raise RuntimeError("yoyo")
+
     if str is bytes:
         __nonzero__ = __bool__
+
+
 badbool = badbool()
 
 
 class baditer(object):  # pylint: disable = invalid-name
-    """ bad iter """
+    """bad iter"""
+
     def __init__(self, *what):
         self._what = iter(what)
 
@@ -342,4 +404,5 @@ class baditer(object):  # pylint: disable = invalid-name
             if isinstance(item, Exception):
                 raise item
             return item
+
     next = __next__

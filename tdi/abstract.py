@@ -36,7 +36,7 @@ impl = _abstract.make_impl(globals())
 
 
 class Parser(_abstract.base):
-    """ ABC for template parsers """
+    """ABC for template parsers"""
 
     def feed(self, food):
         """
@@ -57,7 +57,7 @@ class Parser(_abstract.base):
 
 
 class Listener(_abstract.base):
-    """ ABC for a parser/lexer event listener """
+    """ABC for a parser/lexer event listener"""
 
     @_abstract.method
     def handle_text(self, data):

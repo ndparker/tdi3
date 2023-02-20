@@ -53,19 +53,19 @@ class TextDecoder(object):
     """
 
     def __init__(self, encoding):
-        """ :See: :class:`abstract.Decoder` """
+        """:See: :class:`abstract.Decoder`"""
         self.encoding = encoding
 
     def normalize(self, name):
-        """ :See: `abstract.Decoder` """
+        """:See: `abstract.Decoder`"""
         return name
 
     def decode(self, value, errors='strict'):
-        """ :See: :class:`abstract.Decoder` """
+        """:See: :class:`abstract.Decoder`"""
         return value.decode(self.encoding, errors)
 
     def attribute(self, value, errors='strict'):
-        """ :See: :class:`abstract.Decoder` """
+        """:See: :class:`abstract.Decoder`"""
         value = value.decode(self.encoding, errors)
         if value.startswith(u'"') or value.startswith(u"'"):
             value = value[1:-1]

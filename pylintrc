@@ -141,6 +141,7 @@ disable=
     no-else-return,
     no-else-raise,
     no-else-continue,
+    use-dict-literal,
     redundant-u-string-prefix,
 
 

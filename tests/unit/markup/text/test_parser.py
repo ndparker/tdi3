@@ -34,295 +34,129 @@ from tdi import abstract as _abstract
 
 from .... import _util as _test
 
-# pylint: disable = invalid-name, protected-access, missing-docstring
 
-
-def test_Lexer_init():
-    """ TextLexer() inits properly """
+def test_lexer():
+    """TextLexer works as expected"""
     listener = _test.mock.MagicMock()
-    inst = _parser.TextLexer(listener)
 
-    assert isinstance(inst, _abstract.Parser)
-    assert inst._listener is listener
-    assert inst._state == inst._lex_text  # pylint: disable = comparison-with-callable
-    assert inst.state == 'TEXT'
-    assert inst._buffer == b''
-    assert inst.encoding == 'utf-8'
+    lexer = _parser.TextLexer(listener)
+    assert isinstance(lexer, _abstract.Parser)
 
-    assert _test.calls(listener) == []  # pylint: disable = use-implicit-booleaness-not-comparison
+    tpl = _test.dedent(
+        """
+        [? encoding=latin-1 ?]
 
+        Hey [[who]]!
 
-def test_Lexer_feed():
-    """ TextLexer().feed() works as expected """
-    mock = _test.mock.MagicMock()
+        [# some comment #]
+        [mytag aname="foo" name2]
+            jsklajsl[]f
+        [/mytag]
 
-    class Foo(_parser.TextLexer):
-        def _lex(self):
-            mock._lex(with_buffer=self._buffer)
-            self._buffer = self._buffer[4:]
-            return True
+        The end.
+        [##]
+        [  ]
 
-    inst = Foo(mock.listener)
-    inst.feed(b'hallo')
-    inst.feed(u'Andr\xe9')
-
-    assert _test.calls(mock) == [
-        ('_lex', (), {'with_buffer': b'hallo'}),
-        ('_lex', (), {'with_buffer': b'oAndr\xc3\xa9'}),
-    ]
-
-
-def test_Lexer_finalize():
-    """ TextLexer().finalize() works as expected """
-    mock = _test.mock.MagicMock()
-
-    class Foo(_parser.TextLexer):
-        def _lex(self):
-            mock._lex(self._buffer, self.state)
-            self._buffer = self._buffer[4:]
-            return True
-
-    inst = Foo(mock.listener)
-    inst.feed(b'hallo1234')
-
-    with raises(_parser.LexerEOFError) as e:
-        inst.finalize()
-    assert e.value.args == ("Unfinished parser state 'TEXT'",)
-
-    inst.feed(b'123b')
-    inst.finalize()
-    assert inst.state == 'FINAL'
-
-    assert _test.calls(mock) == [
-        ('_lex', (b'hallo1234', 'TEXT'), {}),
-        ('_lex', (b'o1234', 'TEXT'), {}),
-        ('_lex', (b'4123b', 'TEXT'), {}),
-        ('_lex', (b'b', 'TEXT'), {}),
-    ]
-
-
-def test_Lexer_lex():
-    """ TextLexer()._lex() works as expected """
-    mock = _test.mock.MagicMock()
-
-    class Foo(_parser.TextLexer):
-        def _lex_text(self):
-            mock._text(self._buffer, self.state)
-            self._buffer = self._buffer[4:]
-            self.state, self._state = 'HAH', self._lex_hah
-            return False
-
-        def _lex_hah(self):
-            mock._hah(self._buffer, self.state)
-            self._buffer = self._buffer[4:]
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
-
-    inst = Foo(mock.listener)
-    inst.feed(b'hallo1234')
-    assert _test.calls(mock) == [
-        ('_text', (b'hallo1234', 'TEXT'), {}),
-        ('_hah', (b'o1234', 'HAH'), {}),
-    ]
-
-    inst.feed(b'yikes')
-    assert _test.calls(mock) == [
-        ('_text', (b'hallo1234', 'TEXT'), {}),
-        ('_hah', (b'o1234', 'HAH'), {}),
-        ('_text', (b'4yikes', 'TEXT'), {}),
-        ('_hah', (b'es', 'HAH'), {}),
-    ]
-
-    inst.feed(b'dd')
-    assert _test.calls(mock) == [
-        ('_text', (b'hallo1234', 'TEXT'), {}),
-        ('_hah', (b'o1234', 'HAH'), {}),
-        ('_text', (b'4yikes', 'TEXT'), {}),
-        ('_hah', (b'es', 'HAH'), {}),
-        ('_text', (b'dd', 'TEXT'), {}),
-    ]
-
-
-def test_Lexer_lex_final():
-    """ TextLexer()._lex_final() works as expected """
-    mock = _test.mock.MagicMock()
-    inst = _parser.TextLexer(mock.listener)
+        [unnamed=Foo]
+    """
+    )
+    buflen = 3
+    while tpl:
+        buf, tpl = tpl[:buflen], tpl[buflen:]
+        lexer.feed(buf)
+    lexer.finalize()
 
     with raises(_parser.LexerFinalizedError) as e:
-        inst._lex_final()
+        lexer.feed('x')
     assert e.value.args == ('The lexer was already finalized',)
 
-    assert _test.calls(mock) == []  # pylint: disable = use-implicit-booleaness-not-comparison
-
-
-def test_Lexer_lex_text():
-    """ TextLexer()._lex_text() works as expected """
-    mock = _test.mock.MagicMock()
-
-    class Foo(_parser.TextLexer):
-        def _lex_text(self):
-            mock._lex_text(self._buffer, self.state)
-            return super(Foo, self)._lex_text()
-
-        def _lex_markup(self):
-            mock._lex_markup(self._buffer, self.state)
-            self._buffer = self._buffer[1:]
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
-
-    inst = Foo(mock.listener)
-
-    inst.feed(b'lalala')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'lalala', 'TEXT'), {}),
-        ('listener.handle_text', (b'lalala',), {}),
-    ]
-
-    inst.feed(b'[lalala')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'lalala', 'TEXT'), {}),
-        ('listener.handle_text', (b'lalala',), {}),
-
-        ('_lex_text', (b'[lalala', 'TEXT'), {}),
-        ('_lex_markup', (b'[lalala', 'MARKUP'), {}),
-    ]
-
-    inst.feed(b'lal[ala')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'lalala', 'TEXT'), {}),
-        ('listener.handle_text', (b'lalala',), {}),
-
-        ('_lex_text', (b'[lalala', 'TEXT'), {}),
-        ('_lex_markup', (b'[lalala', 'MARKUP'), {}),
-
-        ('_lex_text', (b'lalalalal[ala', 'TEXT'), {}),
-        ('listener.handle_text', (b'lalalalal',), {}),
-        ('_lex_markup', (b'[ala', 'MARKUP'), {}),
+    assert _test.calls(listener) == [
+        ('handle_pi', (b'[? encoding=latin-1 ?]',), {}),
+        ('handle_text', (b'\n\n',), {}),
+        ('handle_text', (b'Hey',), {}),
+        ('handle_text', (b' ',), {}),
+        ('handle_starttag', (b'who', [], True, b'[[who]]'), {}),
+        ('handle_text', (b'!',), {}),
+        ('handle_text', (b'\n\n',), {}),
+        ('handle_comment', (b'[# some comment #]',), {}),
+        ('handle_text', (b'\n',), {}),
+        (
+            'handle_starttag',
+            (
+                b'mytag',
+                [(b'aname', b'"foo"'), (b'name2', None)],
+                False,
+                b'[mytag aname="foo" name2]',
+            ),
+            {},
+        ),
+        ('handle_text', (b'\n ',), {}),
+        ('handle_text', (b'   ',), {}),
+        ('handle_text', (b'jsk',), {}),
+        ('handle_text', (b'laj',), {}),
+        ('handle_text', (b'sl',), {}),
+        ('handle_escape', (b'[', b'[]'), {}),
+        ('handle_text', (b'f\n',), {}),
+        ('handle_endtag', (b'mytag', b'[/mytag]'), {}),
+        ('handle_text', (b'\n',), {}),
+        ('handle_text', (b'\nTh',), {}),
+        ('handle_text', (b'e e',), {}),
+        ('handle_text', (b'nd.',), {}),
+        ('handle_text', (b'\n',), {}),
+        ('handle_comment', (b'[##]',), {}),
+        ('handle_text', (b'\n',), {}),
+        ('handle_text', (b'[  ]',), {}),
+        ('handle_text', (b'\n\n',), {}),
+        (
+            'handle_starttag',
+            (b'', [(b'unnamed', b'Foo')], False, b'[unnamed=Foo]'),
+            {},
+        ),
+        ('handle_text', (b'\n',), {}),
     ]
 
 
-def test_Lexer_lex_markup():
-    """ TextLexer()._lex_markup() works as expected """
-    mock = _test.mock.MagicMock()
+def test_lexer_unfinished():
+    """TextLexer bails on unfinished state"""
+    listener = _test.mock.MagicMock()
 
-    class Foo(_parser.TextLexer):
-        def _lex_text(self):
-            mock._lex_text(self._buffer, self.state)
-            return super(Foo, self)._lex_text()
+    lexer = _parser.TextLexer(listener)
 
-        def _lex_markup(self):
-            mock._lex_markup(self._buffer, self.state)
-            return super(Foo, self)._lex_markup()
+    tpl = _test.dedent(
+        """
+        [? encoding=latin-1 ?]
 
-        def _lex_endtag(self):
-            mock._lex_endtag(self._buffer, self.state)
-            self._buffer = b''
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
+        [mytag aname="foo" name2
+    """
+    )
+    buflen = 3
+    while tpl:
+        buf, tpl = tpl[:buflen], tpl[buflen:]
+        lexer.feed(buf)
 
-        def _lex_comment(self):
-            mock._lex_comment(self._buffer, self.state)
-            self._buffer = b''
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
+    with raises(_parser.LexerEOFError) as e:
+        lexer.finalize()
+    assert e.value.args == (
+        "Unfinished parser state 'STARTTAG' at position 24 "
+        "(line 2, column 0)",
+    )
 
-        def _lex_pi(self):
-            mock._lex_pi(self._buffer, self.state)
-            self._buffer = b''
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
-
-        def _lex_starttag(self):
-            mock._lex_starttag(self._buffer, self.state)
-            self._buffer = b''
-            self.state, self._state = 'TEXT', self._lex_text
-            return True
-
-    inst = Foo(mock.listener)
-
-    inst.feed(b'[')
-    inst.feed('/')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'[', 'TEXT'), {}),
-        ('_lex_markup', (b'[', 'MARKUP'), {}),
-        ('_lex_markup', (b'[/', 'MARKUP'), {}),
-        ('_lex_endtag', (b'[/', 'ENDTAG'), {}),
+    assert _test.calls(listener) == [
+        ('handle_pi', (b'[? encoding=latin-1 ?]',), {}),
+        ('handle_text', (b'\n\n',), {}),
     ]
 
-    inst.feed(b'[#')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'[', 'TEXT'), {}),
-        ('_lex_markup', (b'[', 'MARKUP'), {}),
-        ('_lex_markup', (b'[/', 'MARKUP'), {}),
-        ('_lex_endtag', (b'[/', 'ENDTAG'), {}),
 
-        ('_lex_text', (b'[#', 'TEXT'), {}),
-        ('_lex_markup', (b'[#', 'MARKUP'), {}),
-        ('_lex_comment', (b'[#', 'COMMENT'), {}),
-    ]
+def test_lexer_smallbuf():
+    """TextLexer: deals with smallbuf"""
+    listener = _test.mock.MagicMock()
 
-    inst.feed(b'[?')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'[', 'TEXT'), {}),
-        ('_lex_markup', (b'[', 'MARKUP'), {}),
-        ('_lex_markup', (b'[/', 'MARKUP'), {}),
-        ('_lex_endtag', (b'[/', 'ENDTAG'), {}),
+    lexer = _parser.TextLexer(listener)
 
-        ('_lex_text', (b'[#', 'TEXT'), {}),
-        ('_lex_markup', (b'[#', 'MARKUP'), {}),
-        ('_lex_comment', (b'[#', 'COMMENT'), {}),
+    lexer.feed("[")
+    lexer.feed("]")
+    lexer.finalize()
 
-        ('_lex_text', (b'[?', 'TEXT'), {}),
-        ('_lex_markup', (b'[?', 'MARKUP'), {}),
-        ('_lex_pi', (b'[?', 'PI'), {}),
-    ]
-
-    inst.feed(b'xx[]yy')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'[', 'TEXT'), {}),
-        ('_lex_markup', (b'[', 'MARKUP'), {}),
-        ('_lex_markup', (b'[/', 'MARKUP'), {}),
-        ('_lex_endtag', (b'[/', 'ENDTAG'), {}),
-
-        ('_lex_text', (b'[#', 'TEXT'), {}),
-        ('_lex_markup', (b'[#', 'MARKUP'), {}),
-        ('_lex_comment', (b'[#', 'COMMENT'), {}),
-
-        ('_lex_text', (b'[?', 'TEXT'), {}),
-        ('_lex_markup', (b'[?', 'MARKUP'), {}),
-        ('_lex_pi', (b'[?', 'PI'), {}),
-
-        ('_lex_text', (b'xx[]yy', 'TEXT'), {}),
-        ('listener.handle_text', (b'xx',), {}),
-        ('_lex_markup', (b'[]yy', 'MARKUP'), {}),
-        ('listener.handle_escape', (b'[', b'[]'), {}),
-        ('_lex_text', (b'yy', 'TEXT'), {}),
-        ('listener.handle_text', (b'yy',), {}),
-    ]
-
-    inst.feed(b'[yy')
-    assert _test.calls(mock) == [
-        ('_lex_text', (b'[', 'TEXT'), {}),
-        ('_lex_markup', (b'[', 'MARKUP'), {}),
-        ('_lex_markup', (b'[/', 'MARKUP'), {}),
-        ('_lex_endtag', (b'[/', 'ENDTAG'), {}),
-
-        ('_lex_text', (b'[#', 'TEXT'), {}),
-        ('_lex_markup', (b'[#', 'MARKUP'), {}),
-        ('_lex_comment', (b'[#', 'COMMENT'), {}),
-
-        ('_lex_text', (b'[?', 'TEXT'), {}),
-        ('_lex_markup', (b'[?', 'MARKUP'), {}),
-        ('_lex_pi', (b'[?', 'PI'), {}),
-
-        ('_lex_text', (b'xx[]yy', 'TEXT'), {}),
-        ('listener.handle_text', (b'xx',), {}),
-        ('_lex_markup', (b'[]yy', 'MARKUP'), {}),
-        ('listener.handle_escape', (b'[', b'[]'), {}),
-        ('_lex_text', (b'yy', 'TEXT'), {}),
-        ('listener.handle_text', (b'yy',), {}),
-
-        ('_lex_text', (b'[yy', 'TEXT'), {}),
-        ('_lex_markup', (b'[yy', 'MARKUP'), {}),
-        ('_lex_starttag', (b'[yy', 'STARTTAG'), {}),
+    assert _test.calls(listener) == [
+        ('handle_escape', (b'[', b'[]'), {}),
     ]

@@ -43,7 +43,7 @@ python = _test.python_impl(_encoder)
 
 @multi
 def test_init():
-    """ markup.encoder.text.TextEncoder() inits properly """
+    """markup.encoder.text.TextEncoder() inits properly"""
     inst = _encoder.TextEncoder('foo')
     assert isinstance(inst, _abstract.Encoder)
     assert inst.encoding == 'foo'
@@ -51,27 +51,37 @@ def test_init():
 
 @multi
 def test_starttag_simple():
-    """ markup.encoder.text.TextEncoder().starttag() emits regular tags """
+    """markup.encoder.text.TextEncoder().starttag() emits regular tags"""
     inst = _encoder.TextEncoder('foo')
 
     result = inst.starttag(b'xx', iter([]), False)
     assert result == b'[xx]'
 
-    result = inst.starttag(b'yy', iter([(b'aa', None), (b'bb', b'cc')]),
-                           False)
+    result = inst.starttag(
+        b'yy', iter([(b'aa', None), (b'bb', b'cc')]), False
+    )
     assert result == b'[yy aa bb=cc]'
 
 
 @multi
 def test_starttag_many_attributes():
-    """ markup.encoder.text.TextEncoder().starttag() deals with many attrs """
+    """markup.encoder.text.TextEncoder().starttag() deals with many attrs"""
     inst = _encoder.TextEncoder('foo')
 
-    result = inst.starttag(b'yy', iter([(b'aa', None), (b'bb', b'cc'),
-                                        (b'x', None), (b'zz', b'vv'),
-                                        (b'lalala', b'lololo'),
-                                        (b'uauaua', b'l')]),
-                           False)
+    result = inst.starttag(
+        b'yy',
+        iter(
+            [
+                (b'aa', None),
+                (b'bb', b'cc'),
+                (b'x', None),
+                (b'zz', b'vv'),
+                (b'lalala', b'lololo'),
+                (b'uauaua', b'l'),
+            ]
+        ),
+        False,
+    )
     assert result == b'[yy aa bb=cc x zz=vv lalala=lololo uauaua=l]'
 
 
@@ -113,13 +123,14 @@ def test_starttag_invalid_attributes():
         inst.starttag(b'yy', [(b'x', b'y', b'z')], False)
 
     with raises(RuntimeError):
-        inst.starttag(b'xx', [_test.baditer(b'x', b'y', RuntimeError())],
-                      False)
+        inst.starttag(
+            b'xx', [_test.baditer(b'x', b'y', RuntimeError())], False
+        )
 
 
 @multi
 def test_starttag_closing():
-    """ markup.encoder.text.TextEncoder().starttag() emits closing tags """
+    """markup.encoder.text.TextEncoder().starttag() emits closing tags"""
     inst = _encoder.TextEncoder('foo')
 
     result = inst.starttag(b'xx', iter([]), True)
@@ -131,7 +142,7 @@ def test_starttag_closing():
 
 @multi
 def test_starttag_badname():
-    """ markup.encoder.text.TextEncoder().starttag() deals with bad name """
+    """markup.encoder.text.TextEncoder().starttag() deals with bad name"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.starttag(u'x', [], False)
@@ -139,7 +150,7 @@ def test_starttag_badname():
 
 @multi
 def test_starttag_bad_closing():
-    """ markup.encoder.text.TextEncoder().starttag() deals with bad bool """
+    """markup.encoder.text.TextEncoder().starttag() deals with bad bool"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(RuntimeError):
         inst.starttag(b'x', [], _test.badbool)
@@ -147,7 +158,7 @@ def test_starttag_bad_closing():
 
 @c
 def test_starttag_arg_error():
-    """ markup.encoder.text.TextEncoder().starttag() checks arguments """
+    """markup.encoder.text.TextEncoder().starttag() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.starttag()  # pylint: disable = no-value-for-parameter
@@ -155,7 +166,7 @@ def test_starttag_arg_error():
 
 @multi
 def test_endtag():
-    """ markup.encoder.text.TextEncoder().endtag() emits endtags """
+    """markup.encoder.text.TextEncoder().endtag() emits endtags"""
     inst = _encoder.TextEncoder('foo')
 
     result = inst.endtag(b'xx')
@@ -164,7 +175,7 @@ def test_endtag():
 
 @multi
 def test_endtag_badtype():
-    """ markup.encoder.text.TextEncoder().endtag() deals with bad type """
+    """markup.encoder.text.TextEncoder().endtag() deals with bad type"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.endtag(u's')
@@ -172,7 +183,7 @@ def test_endtag_badtype():
 
 @c
 def test_endtag_arg_error():
-    """ markup.encoder.text.TextEncoder().endtag() checks arguments """
+    """markup.encoder.text.TextEncoder().endtag() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.endtag()  # pylint: disable = no-value-for-parameter
@@ -180,7 +191,7 @@ def test_endtag_arg_error():
 
 @multi
 def test_name_unicode():
-    """ markup.encoder.text.TextEncoder().name() accepts unicode """
+    """markup.encoder.text.TextEncoder().name() accepts unicode"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.name(u'Andr\xe9')
@@ -189,7 +200,7 @@ def test_name_unicode():
 
 @multi
 def test_name_bytes():
-    """ markup.encoder.text.TextEncoder().name() accepts bytes """
+    """markup.encoder.text.TextEncoder().name() accepts bytes"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.name(b'Andr\xe9')
@@ -198,7 +209,7 @@ def test_name_bytes():
 
 @c
 def test_name_badstr():
-    """ markup.encoder.text.TextEncoder().name() raises on bad string """
+    """markup.encoder.text.TextEncoder().name() raises on bad string"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(RuntimeError):
         inst.name(_test.badstr)
@@ -206,7 +217,7 @@ def test_name_badstr():
 
 @c
 def test_name_arg_error():
-    """ markup.encoder.text.TextEncoder().name() checks arguments """
+    """markup.encoder.text.TextEncoder().name() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.name()  # pylint: disable = no-value-for-parameter
@@ -214,7 +225,7 @@ def test_name_arg_error():
 
 @multi
 def test_attribute_unicode():
-    """ markup.encoder.text.TextEncoder().attribute() accepts unicode """
+    """markup.encoder.text.TextEncoder().attribute() accepts unicode"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.attribute(u'Andr\xe9')
@@ -229,7 +240,7 @@ def test_attribute_unicode():
 
 @multi
 def test_attribute_bytes():
-    """ markup.encoder.text.TextEncoder().attribute() accepts bytes """
+    """markup.encoder.text.TextEncoder().attribute() accepts bytes"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.attribute(b'Andr\xe9')
@@ -244,7 +255,7 @@ def test_attribute_bytes():
 
 @c
 def test_attribute_badstr():
-    """ markup.encoder.text.TextEncoder().attribute() raises on bad str """
+    """markup.encoder.text.TextEncoder().attribute() raises on bad str"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(RuntimeError):
         inst.attribute(_test.badstr)
@@ -252,7 +263,7 @@ def test_attribute_badstr():
 
 @c
 def test_attribute_arg_error():
-    """ markup.encoder.text.TextEncoder().attribute() checks arguments """
+    """markup.encoder.text.TextEncoder().attribute() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.attribute()  # pylint: disable = no-value-for-parameter
@@ -260,7 +271,7 @@ def test_attribute_arg_error():
 
 @multi
 def test_content_unicode():
-    """ markup.encoder.text.TextEncoder().content() accepts unicode """
+    """markup.encoder.text.TextEncoder().content() accepts unicode"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.content(u'Andr\xe9')
@@ -269,7 +280,7 @@ def test_content_unicode():
 
 @multi
 def test_content_bytes():
-    """ markup.encoder.text.TextEncoder().content() accepts bytes """
+    """markup.encoder.text.TextEncoder().content() accepts bytes"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.content(b'Andr\xe9')
@@ -278,7 +289,7 @@ def test_content_bytes():
 
 @c
 def test_content_badstr():
-    """ markup.encoder.text.TextEncoder().content() raises on bad string """
+    """markup.encoder.text.TextEncoder().content() raises on bad string"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(RuntimeError):
         inst.content(_test.badstr)
@@ -286,7 +297,7 @@ def test_content_badstr():
 
 @c
 def test_content_arg_error():
-    """ markup.encoder.text.TextEncoder().content() checks arguments """
+    """markup.encoder.text.TextEncoder().content() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.content()  # pylint: disable = no-value-for-parameter
@@ -294,7 +305,7 @@ def test_content_arg_error():
 
 @multi
 def test_encode_unicode():
-    """ markup.encoder.text.TextEncoder().encode() accepts unicode """
+    """markup.encoder.text.TextEncoder().encode() accepts unicode"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.encode(u'Andr\xe9')
@@ -303,7 +314,7 @@ def test_encode_unicode():
 
 @multi
 def test_encode_bytes():
-    """ markup.encoder.text.TextEncoder().encode() accepts bytes """
+    """markup.encoder.text.TextEncoder().encode() accepts bytes"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.encode(b'Andr\xe9')
@@ -312,7 +323,7 @@ def test_encode_bytes():
 
 @c
 def test_encode_arg_error():
-    """ markup.encoder.text.TextEncoder().encode() checks arguments """
+    """markup.encoder.text.TextEncoder().encode() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.encode()  # pylint: disable = no-value-for-parameter
@@ -320,7 +331,7 @@ def test_encode_arg_error():
 
 @multi
 def test_escape_unicode():
-    """ markup.encoder.text.TextEncoder().escape() accepts unicode """
+    """markup.encoder.text.TextEncoder().escape() accepts unicode"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.escape(u'Andr\xe9')
@@ -332,7 +343,7 @@ def test_escape_unicode():
 
 @multi
 def test_escape_bytes():
-    """ markup.encoder.text.TextEncoder().escape() accepts bytes """
+    """markup.encoder.text.TextEncoder().escape() accepts bytes"""
     inst = _encoder.TextEncoder('utf-8')
 
     result = inst.escape(b'Andr\xe9')
@@ -344,7 +355,7 @@ def test_escape_bytes():
 
 @c
 def test_escape_badstr():
-    """ markup.encoder.text.TextEncoder().escape() raises on bad str """
+    """markup.encoder.text.TextEncoder().escape() raises on bad str"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(RuntimeError):
         inst.escape(_test.badstr)
@@ -352,7 +363,7 @@ def test_escape_badstr():
 
 @c
 def test_escape_arg_error():
-    """ markup.encoder.text.TextEncoder().escape() checks arguments """
+    """markup.encoder.text.TextEncoder().escape() checks arguments"""
     inst = _encoder.TextEncoder('utf-8')
     with raises(TypeError):
         inst.escape()  # pylint: disable = no-value-for-parameter
@@ -360,7 +371,7 @@ def test_escape_arg_error():
 
 @multi
 def test_weakref():
-    """ markup.encoder.text.TextEncoder() accepts and clears weakrefs """
+    """markup.encoder.text.TextEncoder() accepts and clears weakrefs"""
     inst = _encoder.TextEncoder('foo')
     ref = _weakref.ref(inst)
 
@@ -371,7 +382,7 @@ def test_weakref():
 
 @c
 def test_new_argerror():
-    """ markup.encoder.text.TextEncoder() checks arguments """
+    """markup.encoder.text.TextEncoder() checks arguments"""
     with raises(TypeError):
         _encoder.TextEncoder()  # pylint: disable = no-value-for-parameter
 
@@ -381,7 +392,7 @@ def test_new_argerror():
 
 @c
 def test_setencoding():
-    """ markup.encoder.text.TextEncoder() accepts encoding """
+    """markup.encoder.text.TextEncoder() accepts encoding"""
     inst = _encoder.TextEncoder('foo')
     inst.encoding = 'bar'
 

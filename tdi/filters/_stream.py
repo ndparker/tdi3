@@ -33,10 +33,11 @@ class BaseStreamFilter(object):
     """
     Base stream filter class, which actually passes everything unfiltered
     """
+
     __slots__ = ('_stream', '__weakref__')
 
     def __new__(cls, *args, **kwargs):
-        """ Construction """
+        """Construction"""
         result = super(BaseStreamFilter, cls).__new__(cls)
         result._stream = None
         return result
@@ -92,6 +93,7 @@ class StreamFilename(BaseStreamFilter):
       filename (str):
         The provided filename
     """
+
     __slots__ = ('filename',)
 
     def __init__(self, stream, filename):

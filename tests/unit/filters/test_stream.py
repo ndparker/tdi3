@@ -39,7 +39,7 @@ from ... import _util as _test
 
 
 def test_base_init():
-    """ BaseStreamFilter inits and delegates properly """
+    """BaseStreamFilter inits and delegates properly"""
     stream = _test.mock.MagicMock()
     del stream.meh
     inst = _stream.BaseStreamFilter(stream)
@@ -56,7 +56,7 @@ def test_base_init():
 
 
 def test_base_assign():
-    """ BaseStreamFilter assigns stream """
+    """BaseStreamFilter assigns stream"""
     stream = _test.mock.MagicMock()
     stream2 = _test.mock.MagicMock()
     inst = _stream.BaseStreamFilter(stream)
@@ -79,7 +79,7 @@ def test_base_assign():
 
 
 def test_base_weakref():
-    """ BaseStreamFilter accepts and clears weakrefs """
+    """BaseStreamFilter accepts and clears weakrefs"""
     stream = _test.mock.MagicMock()
     inst = _stream.BaseStreamFilter(stream)
     ref = _weakref.ref(inst)
@@ -90,7 +90,8 @@ def test_base_weakref():
 
 
 def test_base_bad_init():
-    """ BaseStreamFilter deals with bad init """
+    """BaseStreamFilter deals with bad init"""
+
     class Foo(_stream.BaseStreamFilter):
         def __init__(self):  # pylint: disable = super-init-not-called
             pass
@@ -106,19 +107,19 @@ def test_base_bad_init():
         _stream.BaseStreamFilter()
     assert e.value.args in (
         # py3.10
-        ("BaseStreamFilter.__init__() missing 1 required positional "
-         "argument: 'stream'",),
-
+        (
+            "BaseStreamFilter.__init__() missing 1 required positional "
+            "argument: 'stream'",
+        ),
         # py3.9
         ("__init__() missing 1 required positional argument: 'stream'",),
-
         # py2.7
         ('__init__() takes exactly 2 arguments (1 given)',),
     )
 
 
 def test_filename_init():
-    """ FilterFilename inits and delegates properly """
+    """FilterFilename inits and delegates properly"""
     stream = _test.mock.MagicMock()
     del stream.meh
 
@@ -136,7 +137,7 @@ def test_filename_init():
 
 
 def test_filename_weakref():
-    """ FilterFilename accepts and clears weakrefs """
+    """FilterFilename accepts and clears weakrefs"""
     stream = _test.mock.MagicMock()
     inst = _stream.StreamFilename(stream, 'foo.html')
     ref = _weakref.ref(inst)

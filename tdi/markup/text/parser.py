@@ -40,7 +40,8 @@ _UNI = type(u'')
 #: Regex matcher for a start tag
 #:
 #: :Type: ``callable``
-_START_MATCH = _re.compile(br'''
+_START_MATCH = _re.compile(
+    br'''
     \[
         (
             [^\\"'\[\]]*
@@ -53,12 +54,15 @@ _START_MATCH = _re.compile(br'''
             )*
         )
     \]
-''', _re.X | _re.S).match
+''',
+    _re.X | _re.S,
+).match
 
 #: Regex matcher for an self-closed start tag
 #:
 #: :Type: callable
-_CLOSED_START_MATCH = _re.compile(br'''
+_CLOSED_START_MATCH = _re.compile(
+    br'''
     \[
         (
             \[
@@ -73,12 +77,15 @@ _CLOSED_START_MATCH = _re.compile(br'''
             \]
         )
     \]
-''', _re.X | _re.S).match
+''',
+    _re.X | _re.S,
+).match
 
 #: Regex iterator for extracting start tag attributes
 #:
 #: :Type: callable
-_ATT_ITER = _re.compile(r'''
+_ATT_ITER = _re.compile(
+    br'''
     \s*
     (?P<name>[^\s=\]]*)           # attribute name
     \s*
@@ -90,7 +97,9 @@ _ATT_ITER = _re.compile(r'''
           | [^\\\s\]]*
         )
     )?
-''', _re.X | _re.S).finditer
+''',
+    _re.X | _re.S,
+).finditer
 
 
 @_abstract.impl('Parser')
@@ -104,6 +113,10 @@ class TextLexer(object):
 
       state (str):
         Current state's name
+
+      position (dict):
+        Position counters, based on bytes, all starting at zero.
+        (``{byte: int, line: int, column: int}``)
     """
 
     def __init__(self, listener, encoding='utf-8'):
@@ -134,6 +147,8 @@ class TextLexer(object):
         self._buffer = b''
         self.encoding = encoding
 
+        self.position = dict(byte=0, line=0, column=0)
+
     def feed(self, food):
         """
         Feed the lexer new data
@@ -159,11 +174,20 @@ class TextLexer(object):
         """
         self._lex()
         if self._buffer:
-            raise LexerEOFError("Unfinished parser state %r" % (self.state,))
+            raise LexerEOFError(
+                "Unfinished parser state %r at position %d "
+                "(line %d, column %d)"
+                % (
+                    self.state,
+                    self.position['byte'],
+                    self.position['line'],
+                    self.position['column'],
+                )
+            )
         self.state, self._state = 'FINAL', self._lex_final
 
     def _lex(self):
-        """ Analyze the current buffer """
+        """Analyze the current buffer"""
         while self._buffer:
             if self._state():
                 break
@@ -178,6 +202,18 @@ class TextLexer(object):
           LexerFinalizedError: The lexer was already finalized (raised always)
         """
         raise LexerFinalizedError("The lexer was already finalized")
+
+    def _update_position(self, data):
+        """
+        Update position triple
+
+        Parameters:
+          data (bytes):
+            Data just passed along
+        """
+        self.position['byte'] += len(data)
+        self.position['line'] += data.count(b"\n")
+        self.position['column'] = len(data) - data.rfind(b"\n") - 1
 
     def _lex_text(self):
         """
@@ -200,6 +236,7 @@ class TextLexer(object):
             self._buffer, data = data[pos:], data[:pos]
             self.state, self._state = 'MARKUP', self._lex_markup
 
+        self._update_position(data)
         self._listener.handle_text(data)
         return False
 
@@ -226,6 +263,7 @@ class TextLexer(object):
             self.state, self._state = 'PI', self._lex_pi
         elif char == b']':
             self.state, self._state = 'TEXT', self._lex_text
+            self._update_position(data[:2])
             self._listener.handle_escape(data[0:1], data[:2])
             self._buffer = data[2:]
         else:
@@ -259,6 +297,7 @@ class TextLexer(object):
         # Doesn't make sense if there's nothing inside -> handle as text
         splitted = attrstring.split(None, 1)
         if not splitted:
+            self._update_position(data)
             self._listener.handle_text(data)
             self.state, self._state = 'TEXT', self._lex_text
             return False
@@ -273,7 +312,7 @@ class TextLexer(object):
 
         attr = []
         if attrstring:
-            for match in _ATT_ITER(attrstring):
+            for match in _ATT_ITER(attrstring):  # pragma: no branch
                 key, value = match.group('name', 'value')
                 if key or value is not None:
                     if value:
@@ -282,6 +321,7 @@ class TextLexer(object):
                 else:  # bug in Python < 2.3.5 (fixed in rev 37262)
                     break
 
+        self._update_position(data)
         self._listener.handle_starttag(name, attr, closed, data)
         self.state, self._state = 'TEXT', self._lex_text
         return False
@@ -303,6 +343,7 @@ class TextLexer(object):
         self._buffer, data = data[pos:], data[:pos]
         name = data[2:-1].strip()
 
+        self._update_position(data)
         self._listener.handle_endtag(name, data)
         self.state, self._state = 'TEXT', self._lex_text
         return False
@@ -326,6 +367,7 @@ class TextLexer(object):
         pos += 2
         self._buffer, data = data[pos:], data[:pos]
 
+        self._update_position(data)
         self._listener.handle_comment(data)
         self.state, self._state = 'TEXT', self._lex_text
         return False
@@ -347,6 +389,7 @@ class TextLexer(object):
 
         self._buffer, data = data[pos:], data[:pos]
 
+        self._update_position(data)
         self._listener.handle_pi(data)
         self.state, self._state = 'TEXT', self._lex_text
         return False
@@ -354,4 +397,4 @@ class TextLexer(object):
 
 @_abstract.impl('Listener', 'Parser')
 class TextParser(object):
-    """ Text parser - semantically deal with units identified by the lexer """
+    """Text parser - semantically deal with units identified by the lexer"""
