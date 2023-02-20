@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2006 - 2022
+ Copyright 2006 - 2023
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -39,7 +39,6 @@ class TextEncoder(object):
 
     :See: :class:`abstract.Encoder`
     """
-    # pylint: disable = no-self-use
 
     def __init__(self, encoding):
         """ :See: :class:`abstract.Encoder` """

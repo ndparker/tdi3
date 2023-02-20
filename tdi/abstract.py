@@ -2,7 +2,7 @@
 u"""
 :Copyright:
 
- Copyright 2017 - 2022
+ Copyright 2017 - 2023
  Andr\xe9 Malo or his licensors, as applicable
 
 :License:
@@ -31,6 +31,8 @@ from . import _abstract
 
 base, method = _abstract.base, _abstract.method
 impl = _abstract.make_impl(globals())
+
+# pylint: disable = too-many-ancestors
 
 
 class Parser(_abstract.base):

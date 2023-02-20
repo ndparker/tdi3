@@ -35,7 +35,7 @@ project with python 2/3 compatibility in mind.
 
 ## COPYRIGHT AND LICENSE
 
-Copyright 2006 - 2022
+Copyright 2006 - 2023
 André Malo or his licensors, as applicable.
 
 The whole package is distributed under the Apache License Version 2.0.
