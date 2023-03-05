@@ -130,6 +130,7 @@ disable=
     locally-disabled,
     file-ignored,
     useless-object-inheritance,
+    bad-file-encoding,
 
     invalid-name,
     redefined-argument-from-local,

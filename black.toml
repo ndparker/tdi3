@@ -1,0 +1,12 @@
+[tool.black]
+skip-string-normalization = true
+line-length = 78
+# target-version = ['py311']
+include='''
+(
+    tdi/.*\.py
+|   tests/.*\.py
+)$
+'''
+# extend-exclude='''
+# '''
